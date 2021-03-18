@@ -1,0 +1,16 @@
+{
+    "name": "leo/mvc-poo",
+    "description": "MVC POO PHP",
+    "authors": [
+        {
+            "name": "Léo",
+            "email": "demetleo@hotmail.fr"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "App\\" : "src/"
+        }
+    }
+}
