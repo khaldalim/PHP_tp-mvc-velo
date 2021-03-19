@@ -29,7 +29,7 @@ require '../src/view/partial/header.php'; ?>
     </div>
 
 
-    <input type="number" class="form-control mb-3" min="0" max="200" name="height" placeholder="Taille en cm" step="1"
+    <input type="number" class="form-control mb-3" min="0" max="35" name="height" placeholder="Taille en pouces" step="1"
            value="<?= $height ?>"
            required>
 

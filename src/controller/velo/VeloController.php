@@ -5,7 +5,9 @@ namespace App\controller\velo;
 
 
 use App\database\Connection;
+use App\model\color\Color;
 use App\model\color\ColorManager;
+use App\model\velo\Velo;
 use App\model\velo\VeloManager;
 
 class VeloController
@@ -16,7 +18,26 @@ class VeloController
         if (isset($_SESSION['user'])) {
             $pdo = Connection::getPdo();
             $veloManager = new VeloManager($pdo);
-            $velos = $veloManager->getAll();
+            $colorManager = new ColorManager($pdo);
+            $colors = $colorManager->getAll();
+
+            if (isset($_GET['velo_search'])) {
+                $veloSearch = [];
+                $veloSearch['id'] = $_GET['id'];
+                $veloSearch['name'] = $_GET['name'];
+                $veloSearch['priceMin'] = $_GET['priceMin'];
+                $veloSearch['priceMax'] = $_GET['priceMax'];
+                $veloSearch['height'] = $_GET['height'];
+                $veloSearch['type'] = $_GET['type'];
+                $veloSearch['suspension'] = $_GET['suspension'];
+                $veloSearch['color'] = $_GET['color'];
+
+
+                $velos = $veloManager->search($veloSearch);
+            } else {
+                $velos = $veloManager->getAll();
+            }
+
 
             require '../src/view/velo/list_velo.php';
             return $content;

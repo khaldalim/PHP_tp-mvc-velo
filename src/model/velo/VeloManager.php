@@ -33,6 +33,61 @@ class VeloManager
         return $velos;
     }
 
+    public function search(array $params)
+    {
+        $pdo = Connection::getPdo();
+        $colormanager = new ColorManager($pdo);
+
+        $colors = $colormanager->getAll();
+
+        $where = [];
+        if (is_numeric($params['id'])) {
+            $where[] = "velo_id LIKE " . $params['id'];
+        }
+        if ($params['name'] != '') {
+            $where[] = "velo_name = '" . $params['name'] . "'";
+        }
+        if (is_numeric($params['priceMin'])) {
+            $where[] = "velo_price >= " . $params['priceMin'];
+        }
+        if (is_numeric($params['priceMax'])) {
+            $where[] = "velo_price <= " . $params['priceMax'];
+        }
+        if (is_numeric($params['height'])) {
+            $where[] = "velo_height = " . $params['height'];
+        }
+        if ($params['type'] == 1 || $params['type'] == 0) {
+            $where[] = "velo_type = " . $params['type'];
+        }
+        if ($params['suspension'] == 1 || $params['suspension'] == 0) {
+            $where[] = "velo_suspension = " . $params['suspension'];
+        }
+        if (in_array($params['color'], $colors)) {
+            $where[] = "velo_color = " . $params['color'];
+        }
+
+        var_dump($where);
+        $query = "SELECT * from velo ";
+        $finalQuery = $query;
+
+        if (!empty($where)) $finalQuery .= " WHERE " . $where[0];
+        for ($i = 1; $i < count($where); $i++) {
+            $finalQuery .= " AND " . $where[$i];
+        }
+        var_dump($finalQuery);
+        $statement = $this->pdo->query($finalQuery);
+
+        $velos = [];
+
+        while ($velo = $statement->fetch(PDO::FETCH_ASSOC)) {
+
+
+            $color = $colormanager->getColorByid($velo['velo_color']);
+            $velos[] = new Velo($velo['velo_id'], $velo['velo_name'], $velo['velo_price'], $velo['velo_height'], $velo['velo_type'], $velo['velo_suspension'], $color);
+        }
+        return $velos;
+    }
+
     public function getOne($id): Velo
     {
         $query = "SELECT * from velo WHERE velo_id = :id";
